@@ -1,0 +1,7 @@
+next_image:
+  name: Next Image
+  description: Advance to the next image in the slideshow
+
+previous_image:
+  name: Previous Image
+  description: Go back to the previous image in the slideshow history

@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(pip install:*)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow/**)",
+      "WebFetch(domain:immich.app)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow/**)",
+      "Bash(tree:*)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

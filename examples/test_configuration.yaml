@@ -1,0 +1,47 @@
+# Example Home Assistant configuration for testing Immich Slideshow integration
+# Add this to your configuration.yaml after installing the custom component
+
+# Example automation to cycle through images every 30 seconds
+automation:
+  - alias: "Immich Slideshow Auto Advance"
+    description: "Automatically advance slideshow every 30 seconds"
+    trigger:
+      - platform: time_pattern
+        seconds: "/30"
+    condition:
+      - condition: state
+        entity_id: sensor.immich_image_count
+        state_not: "0"
+    action:
+      - service: immich_slideshow.next_image
+        target:
+          entity_id: sensor.immich_next_image
+    mode: single
+
+# Example script to manually advance image
+script:
+  immich_next_image:
+    alias: "Next Immich Image"
+    sequence:
+      - service: immich_slideshow.next_image
+        target:
+          entity_id: sensor.immich_next_image
+
+# Template sensors for additional functionality
+template:
+  - sensor:
+      - name: "Immich Slideshow Status"
+        state: >
+          {% if states('sensor.immich_image_count') | int > 0 %}
+            {{ states('sensor.immich_current_image') | default('No image') }}
+          {% else %}
+            No images available
+          {% endif %}
+        attributes:
+          current_index: "{{ state_attr('sensor.immich_current_image', 'current_index') }}"
+          total_images: "{{ state_attr('sensor.immich_current_image', 'total_images') }}"
+          filename: "{{ state_attr('sensor.immich_current_image', 'filename') }}"
+          progress: >
+            {% set current = state_attr('sensor.immich_current_image', 'current_index') | default(0) %}
+            {% set total = state_attr('sensor.immich_current_image', 'total_images') | default(1) %}
+            {{ ((current + 1) / total * 100) | round(1) }}%
