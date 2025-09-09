@@ -19,11 +19,53 @@ class ImmichDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the coordinator."""
-        self.client = ImmichClient(
-            entry.data[CONF_SERVER_URL],
-            entry.data[CONF_API_KEY]
-        )
-        self.album_id = entry.data.get(CONF_ALBUM_ID)
+        if not entry.data:
+            _LOGGER.error("Config entry has no data")
+            raise ValueError("Config entry data is empty")
+            
+        _LOGGER.debug("Initializing coordinator with entry data keys: %s", list(entry.data.keys()))
+        _LOGGER.debug("Entry data: %s", {k: "***" if "key" in k.lower() or "token" in k.lower() else v for k, v in entry.data.items()})
+        
+        # Handle various possible key formats for backward compatibility
+        server_url = (entry.data.get(CONF_SERVER_URL) or 
+                     entry.data.get("url") or 
+                     entry.data.get("server") or
+                     entry.data.get("host") or
+                     entry.data.get("base_url"))
+        
+        api_key = (entry.data.get(CONF_API_KEY) or 
+                  entry.data.get("API_KEY") or  # Handle uppercase
+                  entry.data.get("key") or 
+                  entry.data.get("api_token") or
+                  entry.data.get("token") or
+                  entry.data.get("access_token"))
+        
+        # Handle the case where server URL might be stored as a key instead of value
+        # Look for keys that look like URLs
+        if not server_url:
+            for key in entry.data.keys():
+                if (key.startswith('http://') or key.startswith('https://')) and '.' in key:
+                    server_url = key
+                    _LOGGER.warning("Found server URL stored as key instead of value: %s", server_url)
+                    break
+        
+        # Handle album_id with various case formats
+        album_id = (entry.data.get(CONF_ALBUM_ID) or 
+                   entry.data.get("Album_ID") or
+                   entry.data.get("album_id") or
+                   entry.data.get("ALBUM_ID"))
+        
+        if not server_url:
+            _LOGGER.error("Server URL not found in config data. Available keys: %s", list(entry.data.keys()))
+            _LOGGER.error("Full entry data (sanitized): %s", {k: "***" if "key" in k.lower() or "token" in k.lower() else v for k, v in entry.data.items()})
+            raise ValueError(f"Server URL not found in config data. Available keys: {list(entry.data.keys())}")
+        if not api_key:
+            _LOGGER.error("API Key not found in config data. Available keys: %s", list(entry.data.keys()))
+            _LOGGER.error("Full entry data (sanitized): %s", {k: "***" if "key" in k.lower() or "token" in k.lower() else v for k, v in entry.data.items()})
+            raise ValueError(f"API Key not found in config data. Available keys: {list(entry.data.keys())}")
+            
+        self.client = ImmichClient(server_url, api_key)
+        self.album_id = album_id
         self.image_history = []  # Track last 10 images
         self.history_index = -1  # Current position in history (-1 = live mode)
         

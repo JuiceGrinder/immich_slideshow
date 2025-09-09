@@ -8,10 +8,14 @@ CONF_API_KEY = "api_key"
 CONF_ALBUM_ID = "album_id"
 CONF_UPDATE_INTERVAL = "update_interval"
 CONF_USE_THUMBNAILS = "use_thumbnails"
+CONF_RESPECT_CARD_SIZE = "respect_card_size"
+CONF_CROP_TO_FIT = "crop_to_fit"
 
 DEFAULT_UPDATE_INTERVAL = 30
 DEFAULT_NAME = "Immich Slideshow"
 DEFAULT_USE_THUMBNAILS = True
+DEFAULT_RESPECT_CARD_SIZE = True
+DEFAULT_CROP_TO_FIT = False
 
 # Display labels for config flow
 CONF_SERVER_URL_LABEL = "Server URL"

@@ -10,7 +10,20 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import CONF_API_KEY, CONF_SERVER_URL, CONF_ALBUM_ID, CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL, DOMAIN
+from .const import (
+    CONF_API_KEY, 
+    CONF_SERVER_URL, 
+    CONF_ALBUM_ID, 
+    CONF_UPDATE_INTERVAL, 
+    CONF_USE_THUMBNAILS,
+    CONF_RESPECT_CARD_SIZE,
+    CONF_CROP_TO_FIT,
+    DEFAULT_UPDATE_INTERVAL,
+    DEFAULT_USE_THUMBNAILS,
+    DEFAULT_RESPECT_CARD_SIZE,
+    DEFAULT_CROP_TO_FIT,
+    DOMAIN
+)
 from .immich_client import ImmichClient
 
 _LOGGER = logging.getLogger(__name__)
@@ -26,7 +39,22 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect."""
-    client = ImmichClient(data[CONF_SERVER_URL], data[CONF_API_KEY])
+    server_url = data[CONF_SERVER_URL].strip()
+    
+    # Validate server URL format
+    if not server_url.startswith(('http://', 'https://')):
+        raise ValueError("Server URL must start with http:// or https://")
+    
+    # Check for common placeholder values
+    placeholder_hosts = ['your.immich.server', 'localhost', '127.0.0.1', 'example.com', 'immich.example.com']
+    from urllib.parse import urlparse
+    parsed_url = urlparse(server_url)
+    
+    if parsed_url.hostname in placeholder_hosts:
+        _LOGGER.error("Detected placeholder hostname: %s", parsed_url.hostname)
+        raise ValueError(f"Please replace '{parsed_url.hostname}' with your actual Immich server hostname")
+    
+    client = ImmichClient(server_url, data[CONF_API_KEY])
     
     try:
         await hass.async_add_executor_job(client.test_connection)
@@ -34,7 +62,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         _LOGGER.error("Unable to connect to Immich server: %s", exc)
         raise CannotConnect from exc
 
-    return {"title": f"Immich ({data[CONF_SERVER_URL]})"}
+    return {"title": f"Immich ({server_url})"}
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Immich Slideshow."""
@@ -89,6 +117,18 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_UPDATE_INTERVAL,
                     default=self.config_entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
                 ): vol.All(vol.Coerce(int), vol.Range(min=5, max=3600)),
+                vol.Optional(
+                    CONF_USE_THUMBNAILS,
+                    default=self.config_entry.options.get(CONF_USE_THUMBNAILS, DEFAULT_USE_THUMBNAILS),
+                ): bool,
+                vol.Optional(
+                    CONF_RESPECT_CARD_SIZE,
+                    default=self.config_entry.options.get(CONF_RESPECT_CARD_SIZE, DEFAULT_RESPECT_CARD_SIZE),
+                ): bool,
+                vol.Optional(
+                    CONF_CROP_TO_FIT,
+                    default=self.config_entry.options.get(CONF_CROP_TO_FIT, DEFAULT_CROP_TO_FIT),
+                ): bool,
             }
         )
 

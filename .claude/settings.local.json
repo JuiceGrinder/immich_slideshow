@@ -20,7 +20,11 @@
       "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
       "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
       "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
-      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)"
+      "Read(/C:\\Projects\\HomeAssistant\\immichSlideShow\\custom_components\\immich_slideshow/**)",
+      "Bash(git pull:*)",
+      "Bash(rm:*)",
+      "Bash(python:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

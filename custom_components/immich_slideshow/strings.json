@@ -19,5 +19,19 @@
     "abort": {
       "already_configured": "Immich server is already configured"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Immich Slideshow Options",
+        "description": "Configure slideshow settings.",
+        "data": {
+          "update_interval": "Image Display Interval (seconds)",
+          "use_thumbnails": "Use thumbnails for faster loading",
+          "respect_card_size": "Resize images to fit card dimensions",
+          "crop_to_fit": "Crop images to exact card dimensions (fixes picture-entity height issues)"
+        }
+      }
+    }
   }
 }
